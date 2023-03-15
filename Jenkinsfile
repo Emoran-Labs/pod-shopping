@@ -15,7 +15,7 @@ pipeline {
         stage('Build') { 
             steps { 
                 script{
-                 app = docker.build("juice-shop")
+                 app = docker.build("pod-shopping")
                 }
             }
         }/*
@@ -26,15 +26,16 @@ pipeline {
         }
         stage('SAST'){
             steps {
+                 sh 'env | grep -E "JENKINS_HOME|BUILD_ID|GIT_BRANCH|GIT_COMMIT" > /tmp/env'
                  sh 'docker pull registry.fortidevsec.forticloud.com/fdevsec_sast:latest'
-                 sh 'docker run --rm --mount type=bind,source="$PWD",target=/scan registry.fortidevsec.forticloud.com/fdevsec_sast:latest'
+                 sh 'docker run --rm --env-file /tmp/env --mount type=bind,source=$PWD,target=/scan registry.fortidevsec.forticloud.com/fdevsec_sast:latest'
             }
         }*/
         
         stage('Push') {
             steps {
                 script{
-                        docker.withRegistry('https://371571523880.dkr.ecr.us-east-1.amazonaws.com/juice-shop', 'ecr:us-east-1:aws-credentials') {
+                    docker.withRegistry('https://363412468025.dkr.ecr.us-east-2.amazonaws.com/pod-shopping', 'ecr:us-east-2:emoran') {
                     app.push("${env.BUILD_NUMBER}")
                     app.push("latest")
                     }
@@ -50,8 +51,9 @@ pipeline {
         stage('DAST'){
             steps {
                  sh 'sleep 1m'
+                 sh 'env | grep -E "JENKINS_HOME|BUILD_ID|GIT_BRANCH|GIT_COMMIT" > /tmp/env'
                  sh 'docker pull registry.fortidevsec.forticloud.com/fdevsec_dast:latest'
-                 sh 'docker run --rm --mount type=bind,source="$PWD",target=/scan registry.fortidevsec.forticloud.com/fdevsec_dast:latest'                 
+                 sh 'docker run --rm --env-file /tmp/env --mount type=bind,source=$PWD,target=/scan registry.fortidevsec.forticloud.com/fdevsec_dast:latest'             
             }
         }*/
     }

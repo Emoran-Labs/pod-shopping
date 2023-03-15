@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: pod-shopping
-        image: 371571523880.dkr.ecr.us-east-1.amazonaws.com/pod-shopping:latest
+        image: 363412468025.dkr.ecr.us-east-2.amazonaws.com/pod-shopping:latest
   selector:
     matchLabels:
       app: pod-shopping

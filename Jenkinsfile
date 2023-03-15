@@ -23,13 +23,14 @@ pipeline {
             steps {
                  fortiCWPScanner imageName: 'juice-shop:latest', block: true
             }
-        }*/
+        }
         stage('SAST'){
             steps {
                  sh 'docker pull registry.fortidevsec.forticloud.com/fdevsec_sast:latest'
                  sh 'docker run --rm --mount type=bind,source="$PWD",target=/scan registry.fortidevsec.forticloud.com/fdevsec_sast:latest'
             }
-        }
+        }*/
+        
         stage('Push') {
             steps {
                 script{
@@ -44,13 +45,14 @@ pipeline {
             steps {
                  sh 'kubectl apply -f deployment.yml'
             }
-        } 
+        }
+        /*
         stage('DAST'){
             steps {
                  sh 'sleep 1m'
                  sh 'docker pull registry.fortidevsec.forticloud.com/fdevsec_dast:latest'
                  sh 'docker run --rm --mount type=bind,source="$PWD",target=/scan registry.fortidevsec.forticloud.com/fdevsec_dast:latest'                 
             }
-        }
+        }*/
     }
 }
